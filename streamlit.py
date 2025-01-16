@@ -168,6 +168,40 @@ if len(selected_date_range) == 2:
 else:
     filtered_df = df
 
+# Display statistics
+col1, col2, col3 = st.columns(3)
+with col1:
+    st.markdown(
+        f"""
+        <div style="text-align: center;">
+            <p>Total Earthquakes</p>
+            <h3>{len(filtered_df)}</h3>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+with col2:
+    st.markdown(
+        f"""
+        <div style="text-align: center;">
+            <p>Average Magnitude</p>
+            <h3>{filtered_df['Mag'].mean():.2f}</h3>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+with col3:
+    st.markdown(
+        f"""
+        <div style="text-align: center;">
+            <p>Strongest Earthquake</p>
+            <h3>{filtered_df['Mag'].max():.2f}</h3>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+
 # Create the map
 m = folium.Map(location=[38.2, 23.7], zoom_start=7, tiles='CartoDB positron')
 
@@ -200,7 +234,7 @@ for idx, row in filtered_df.iterrows():
     ).add_to(m)
 
 # Display the map
-st_folium(m, width=800, height=900)
+st_folium(m, width=800, height=900, key="earthquake_map")
 
 # Create and display color scale
 if not filtered_df.empty:
@@ -210,15 +244,6 @@ if not filtered_df.empty:
 
 # Add a space
 st.markdown("")
-
-# Display statistics
-col1, col2, col3 = st.columns(3)
-with col1:
-    st.metric("Total Earthquakes", len(filtered_df))
-with col2:
-    st.metric("Average Magnitude", f"{filtered_df['Mag'].mean():.2f}")
-with col3:
-    st.metric("Strongest Earthquake", f"{filtered_df['Mag'].max():.2f}")
 
 # Display data table
 st.subheader("Data")
@@ -252,4 +277,11 @@ st.download_button(
 
 st.markdown("")
 url = 'http://www.geophysics.geol.uoa.gr/stations/maps/recent_gr.html'
-st.markdown("Data source: [National and Kapodistrian University of Athens Seismology Laboratory](%s)" % url )
+st.markdown(
+    f"""
+    <div style="text-align: center; font-size: 12px; margin-top: 20px;">
+        Data source: <a href="{url}" target="_blank">National and Kapodistrian University of Athens Seismology Laboratory</a>
+    </div>
+    """,
+    unsafe_allow_html=True
+)

@@ -3,3 +3,5 @@ pandas
 datetime
 folium
 streamlit_folium
+numpy
+matplotlib

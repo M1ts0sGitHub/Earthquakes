@@ -4,6 +4,9 @@ import pandas as pd
 from datetime import datetime, timedelta
 import folium
 from streamlit_folium import st_folium
+import numpy as np
+import matplotlib.pyplot as plt
+import matplotlib.colors as mcolors
 
 @st.cache_data(ttl=300)  # Cache the data for 5 minutes
 def load_earthquake_data():
@@ -44,7 +47,6 @@ def load_earthquake_data():
     
     return df
 
-
 def get_color(date, min_date, max_date):
     """
     Returns a color between blue (oldest) and red (newest) based on the date
@@ -67,10 +69,39 @@ def get_color(date, min_date, max_date):
     # Convert to hex color
     return f'#{r:02x}00{b:02x}'
 
+def create_color_scale(min_date, max_date):
+    fig, ax = plt.subplots(figsize=(10, 1))
+    
+    # Create gradient array
+    gradient = np.linspace(0, 1, 256)
+    gradient = np.vstack((gradient, gradient))
+    
+    # Create colors array
+    colors = []
+    for i in np.linspace(0, 1, 256):
+        r = int(255 * i)
+        b = int(255 * (1 - i))
+        colors.append((r/255, 0, b/255))
+    
+    # Plot gradient
+    ax.imshow(gradient, aspect='auto', cmap=mcolors.ListedColormap(colors))
+    
+    # Remove axes
+    ax.set_xticks([0, 255])
+    ax.set_xticklabels([min_date.strftime('%Y-%m-%d %H:%M'), 
+                        max_date.strftime('%Y-%m-%d %H:%M')])
+    ax.set_yticks([])
+    
+    # Add title
+    ax.set_title('Earthquake Timeline', pad=10)
+    
+    # Adjust layout
+    plt.tight_layout()
+    
+    return fig
 
 
-
-#####  Site  #####
+#####  Building Site  #####
 
 # Set page config
 st.set_page_config(
@@ -155,6 +186,13 @@ for idx, row in filtered_df.iterrows():
 
 # Display the map
 st_folium(m, width=800, height=900)
+
+# Create and display color scale
+if not filtered_df.empty:
+    st.write("### Color Scale Legend")
+    color_scale_fig = create_color_scale(filtered_df['Datetime'].min(), 
+                                       filtered_df['Datetime'].max())
+    st.pyplot(color_scale_fig)
 
 # Display statistics
 col1, col2, col3 = st.columns(3)

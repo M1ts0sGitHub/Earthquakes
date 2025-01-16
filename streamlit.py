@@ -159,6 +159,12 @@ magnitude_range = st.sidebar.slider(
     step=0.1
 )
 
+st.sidebar.markdown("---")
+st.sidebar.header("About")
+st.sidebar.markdown("This Streamlit app provides an interactive visualization of recent earthquakes in Greece. It fetches real-time earthquake data from the National and Kapodistrian University of Athens Seismology Laboratory and displays it on a map. Users can filter the data by date range and magnitude to focus on specific events. The app also provides key statistics, such as the total number of earthquakes, average magnitude, and the strongest earthquake within the selected filters. Additionally, it includes a color scale to represent the timeline of earthquakes, making it easy to identify recent and older events. The data table at the bottom allows users to explore detailed information about each earthquake.")
+
+
+
 # Filter the data
 if len(selected_date_range) == 2:
     start_date, end_date = selected_date_range

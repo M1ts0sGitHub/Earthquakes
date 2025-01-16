@@ -62,6 +62,9 @@ def get_color(date, min_date, max_date):
     else:
         position = (date_ts - min_ts) / (max_ts - min_ts)
     
+    # Ensure position is within the range [0, 1]
+    position = max(0, min(1, position))
+    
     # Create RGB values
     r = int(255 * position)
     b = int(255 * (1 - position))

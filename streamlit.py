@@ -266,10 +266,12 @@ st_folium(m, width=800, height=900)
 if not filtered_df.empty:
     color_scale_fig = create_color_scale(filtered_df['Datetime'].min(), 
                                        filtered_df['Datetime'].max())
+    color_scale_fig.patch.set_facecolor('#d7edeb')  # Set background color to light grey
     st.pyplot(color_scale_fig)
 
 # Add a space
 st.markdown("---")
+
 
 # Display data table
 st.subheader("Data")

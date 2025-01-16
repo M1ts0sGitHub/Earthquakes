@@ -215,33 +215,52 @@ with col3:
 # Create the map
 m = folium.Map(location=[38.2, 23.7], zoom_start=7, tiles='CartoDB positron')
 
-# Add earthquake points
+# Add all earthquake points except the most recent one
 for idx, row in filtered_df.iterrows():
-    # Calculate color based on recency (more recent = darker)
-    # days_old = (max_date - row['Datetime'].date()).days
-    color = get_color(row['Datetime'], filtered_df['Datetime'].min(), filtered_df['Datetime'].max())
+    if row['Datetime'] != filtered_df['Datetime'].max():
+        # Calculate color based on recency (more recent = darker)
+        color = get_color(row['Datetime'], filtered_df['Datetime'].min(), filtered_df['Datetime'].max())
 
-    # Calculate radius based on magnitude
-    radius = row['Mag']*2.8+1.4
-    
-    # Create popup content
-    popup_content = f"""
-    <b>Date:</b> {row['Datetime'].strftime('%Y-%m-%d %H:%M')}<br>
-    <b>Magnitude:</b> {row['Mag']:.1f}<br>
-    <b>Depth:</b> {row['Dep']:.1f} km
-    """
-    
-    # Add circle marker
-    folium.CircleMarker(
-        location=[row['Lat'], row['Long']],
-        radius=radius,
-        popup=folium.Popup(popup_content, max_width=400),
-        color=color,
-        fill=True,
-        fill_color=color,
-        fill_opacity=0.6,
-        weight=0
-    ).add_to(m)
+        # Calculate radius based on magnitude
+        radius = row['Mag'] * 2.8 + 1.4
+        
+        # Create popup content
+        popup_content = f"""
+        <b>Date:</b> {row['Datetime'].strftime('%Y-%m-%d %H:%M')}<br>
+        <b>Magnitude:</b> {row['Mag']:.1f}<br>
+        <b>Depth:</b> {row['Dep']:.1f} km
+        """
+        
+        # Add circle marker
+        folium.CircleMarker(
+            location=[row['Lat'], row['Long']],
+            radius=radius,
+            popup=folium.Popup(popup_content, max_width=400),
+            fill=True,
+            fill_color=color,
+            fill_opacity=0.6,
+            weight=0
+        ).add_to(m)
+
+# Add the most recent earthquake marker
+most_recent = filtered_df.loc[filtered_df['Datetime'].idxmax()]
+radius = most_recent['Mag'] * 2.8 + 1.4
+popup_content = f"""
+<b>Date:</b> {most_recent['Datetime'].strftime('%Y-%m-%d %H:%M')}<br>
+<b>Magnitude:</b> {most_recent['Mag']:.1f}<br>
+<b>Depth:</b> {most_recent['Dep']:.1f} km
+"""
+
+folium.CircleMarker(
+    location=[most_recent['Lat'], most_recent['Long']],
+    radius=radius,
+    popup=folium.Popup(popup_content, max_width=400),
+    fill=True,
+    color='yellow',  # Outline color
+    fill_color='green',
+    fill_opacity=1,
+    weight=1
+).add_to(m)
 
 # Display the map
 st_folium(m, width=800, height=900)

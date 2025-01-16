@@ -234,7 +234,7 @@ for idx, row in filtered_df.iterrows():
     ).add_to(m)
 
 # Display the map
-st_folium(m, width=800, height=900, key="earthquake_map")
+st_folium(m, width=800, height=900)
 
 # Create and display color scale
 if not filtered_df.empty:

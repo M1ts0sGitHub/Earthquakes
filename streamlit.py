@@ -70,7 +70,7 @@ def get_color(date, min_date, max_date):
     return f'#{r:02x}00{b:02x}'
 
 def create_color_scale(min_date, max_date):
-    fig, ax = plt.subplots(figsize=(10, 1))
+    fig, ax = plt.subplots(figsize=(8, 1))
     
     # Create gradient array
     gradient = np.linspace(0, 1, 256)
@@ -115,7 +115,7 @@ st.markdown(
     """
     <style>
         .block-container {
-            max-width: 1000px;
+            max-width: 900px;
             padding-top: 2rem;
             padding-bottom: 2rem;
         }
@@ -124,12 +124,12 @@ st.markdown(
     unsafe_allow_html=True
 )
 
+# Load the data
+df = load_earthquake_data()
+
 # Title and description
 st.title("🌍 Recent Earthquakes in Greece")
 st.markdown("Data source: National and Kapodistrian University of Athens Seismology Laboratory")
-
-# Load the data
-df = load_earthquake_data()
 
 # Sidebar filters
 st.sidebar.header("Filters")
@@ -172,8 +172,7 @@ m = folium.Map(location=[38.2, 23.7], zoom_start=7)
 # Add earthquake points
 for idx, row in filtered_df.iterrows():
     # Calculate color based on recency (more recent = darker)
-    days_old = (max_date - row['Datetime'].date()).days
-    opacity = max(0.3, 1 - (days_old / 30))
+    # days_old = (max_date - row['Datetime'].date()).days
     color = get_color(row['Datetime'], min_date, max_date)
 
     # Calculate radius based on magnitude
@@ -203,10 +202,12 @@ st_folium(m, width=800, height=900)
 
 # Create and display color scale
 if not filtered_df.empty:
-    st.write("### Color Scale Legend")
     color_scale_fig = create_color_scale(filtered_df['Datetime'].min(), 
                                        filtered_df['Datetime'].max())
     st.pyplot(color_scale_fig)
+
+# Add a space
+st.text('')
 
 # Display statistics
 col1, col2, col3 = st.columns(3)
@@ -218,14 +219,29 @@ with col3:
     st.metric("Strongest Earthquake", f"{filtered_df['Mag'].max():.2f}")
 
 # Display data table
-st.subheader("Earthquake Data")
+st.subheader("Data")
+
+# Create download button
+csv = filtered_df.to_csv(index=False)
+st.download_button(
+    label="Download data as CSV",
+    data=csv,
+    file_name="earthquakes_data.csv",
+    mime="text/csv",
+)
+
+# Display dataframe with custom index starting from 1
 st.dataframe(
     filtered_df.sort_values('Datetime', ascending=False)
     [['Datetime', 'Lat', 'Long', 'Mag', 'Dep']]
+    .reset_index(drop=True)  # Reset index
+    .set_index((np.arange(len(filtered_df)) + 1))  # Set index starting from 1
     .style.format({
+        'Datetime': lambda x: x.strftime('%Y/%m/%d %H:%M'),
         'Lat': '{:.4f}',
         'Long': '{:.4f}',
         'Mag': '{:.1f}',
         'Dep': '{:.1f}'
-    })
+    }),
+    height=385  # Set height to 500px
 )

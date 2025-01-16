@@ -110,6 +110,20 @@ st.set_page_config(
     layout="wide"
 )
 
+# Add custom CSS to control max width
+st.markdown(
+    """
+    <style>
+        .block-container {
+            max-width: 1000px;
+            padding-top: 2rem;
+            padding-bottom: 2rem;
+        }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
 # Title and description
 st.title("🌍 Recent Earthquakes in Greece")
 st.markdown("Data source: National and Kapodistrian University of Athens Seismology Laboratory")

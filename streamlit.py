@@ -5,17 +5,6 @@ from datetime import datetime, timedelta
 import folium
 from streamlit_folium import st_folium
 
-# Set page config
-st.set_page_config(
-    page_title="Greek Earthquakes Visualization",
-    page_icon="🌍",
-    layout="wide"
-)
-
-# Title and description
-st.title("🌍 Recent Earthquakes in Greece")
-st.markdown("Data source: National and Kapodistrian University of Athens Seismology Laboratory")
-
 @st.cache_data(ttl=300)  # Cache the data for 5 minutes
 def load_earthquake_data():
     # Getting Data
@@ -31,8 +20,8 @@ def load_earthquake_data():
     
     # Assign the data and column_names to our dataframe
     df = pd.DataFrame(df_list[1:], columns=df_list[0])
-    # Keep the last 500 earthquakes
-    df = df.iloc[:500]
+    # Keep the last n earthquakes
+    df = df.iloc[:850]
     
     # Convert Lat & Long from text to float
     df['Lat'] = df['Lat'].str.replace(',', '.').astype(float)
@@ -55,6 +44,45 @@ def load_earthquake_data():
     
     return df
 
+
+def get_color(date, min_date, max_date):
+    """
+    Returns a color between blue (oldest) and red (newest) based on the date
+    """
+    # Convert dates to timestamps for calculation
+    date_ts = pd.Timestamp(date).timestamp()
+    min_ts = pd.Timestamp(min_date).timestamp()
+    max_ts = pd.Timestamp(max_date).timestamp()
+    
+    # Calculate normalized position between 0 and 1
+    if max_ts == min_ts:
+        position = 1
+    else:
+        position = (date_ts - min_ts) / (max_ts - min_ts)
+    
+    # Create RGB values
+    r = int(255 * position)
+    b = int(255 * (1 - position))
+    
+    # Convert to hex color
+    return f'#{r:02x}00{b:02x}'
+
+
+
+
+#####  Site  #####
+
+# Set page config
+st.set_page_config(
+    page_title="Greek Earthquakes Visualization",
+    page_icon="🌍",
+    layout="wide"
+)
+
+# Title and description
+st.title("🌍 Recent Earthquakes in Greece")
+st.markdown("Data source: National and Kapodistrian University of Athens Seismology Laboratory")
+
 # Load the data
 df = load_earthquake_data()
 
@@ -66,7 +94,7 @@ min_date = df['Datetime'].min().date()
 max_date = df['Datetime'].max().date()
 selected_date_range = st.sidebar.date_input(
     "Select Date Range",
-    value=(max_date - timedelta(days=7), max_date),
+    value=(min_date, max_date),
     min_value=min_date,
     max_value=max_date
 )
@@ -101,9 +129,10 @@ for idx, row in filtered_df.iterrows():
     # Calculate color based on recency (more recent = darker)
     days_old = (max_date - row['Datetime'].date()).days
     opacity = max(0.3, 1 - (days_old / 30))
-    
+    color = get_color(row['Datetime'], min_date, max_date)
+
     # Calculate radius based on magnitude
-    radius = row['Mag'] * 5000
+    radius = row['Mag']*2.8+1
     
     # Create popup content
     popup_content = f"""
@@ -115,17 +144,17 @@ for idx, row in filtered_df.iterrows():
     # Add circle marker
     folium.CircleMarker(
         location=[row['Lat'], row['Long']],
-        radius=5,
+        radius=radius,
         popup=popup_content,
-        color='red',
+        color=color,
         fill=True,
-        fill_color='red',
-        fill_opacity=opacity,
-        weight=1
+        fill_color=color,
+        fill_opacity=0.7,
+        weight=0
     ).add_to(m)
 
 # Display the map
-st_folium(m, width=800, height=600)
+st_folium(m, width=800, height=900)
 
 # Display statistics
 col1, col2, col3 = st.columns(3)

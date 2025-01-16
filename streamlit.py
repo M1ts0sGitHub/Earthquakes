@@ -229,7 +229,7 @@ for idx, row in filtered_df.iterrows():
         color=color,
         fill=True,
         fill_color=color,
-        fill_opacity=0.8,
+        fill_opacity=0.6,
         weight=0
     ).add_to(m)
 

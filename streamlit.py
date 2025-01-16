@@ -136,6 +136,8 @@ st.title("🌍 Earthquakes in Greece")
 # Sidebar filters
 st.sidebar.header("Filters")
 
+st.sidebar.markdown("---")
+
 # Date range filter
 min_date = df['Datetime'].min().date()
 max_date = df['Datetime'].max().date()
@@ -145,6 +147,8 @@ selected_date_range = st.sidebar.date_input(
     min_value=min_date,
     max_value=max_date
 )
+
+st.sidebar.markdown("---")
 
 # Magnitude filter
 magnitude_range = st.sidebar.slider(
@@ -243,7 +247,7 @@ if not filtered_df.empty:
     st.pyplot(color_scale_fig)
 
 # Add a space
-st.markdown("")
+st.markdown("---")
 
 # Display data table
 st.subheader("Data")

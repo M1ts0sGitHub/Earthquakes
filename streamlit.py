@@ -129,7 +129,6 @@ df = load_earthquake_data()
 
 # Title and description
 st.title("🌍 Recent Earthquakes in Greece")
-st.markdown("Data source: National and Kapodistrian University of Athens Seismology Laboratory")
 
 # Sidebar filters
 st.sidebar.header("Filters")
@@ -167,7 +166,7 @@ else:
     filtered_df = df
 
 # Create the map
-m = folium.Map(location=[38.2, 23.7], zoom_start=7)
+m = folium.Map(location=[38.2, 23.7], zoom_start=7, tiles='CartoDB positron')
 
 # Add earthquake points
 for idx, row in filtered_df.iterrows():
@@ -189,11 +188,11 @@ for idx, row in filtered_df.iterrows():
     folium.CircleMarker(
         location=[row['Lat'], row['Long']],
         radius=radius,
-        popup=popup_content,
+        popup=folium.Popup(popup_content, max_width=400),
         color=color,
         fill=True,
         fill_color=color,
-        fill_opacity=0.7,
+        fill_opacity=0.8,
         weight=0
     ).add_to(m)
 
@@ -207,7 +206,7 @@ if not filtered_df.empty:
     st.pyplot(color_scale_fig)
 
 # Add a space
-st.text('')
+st.markdown("")
 
 # Display statistics
 col1, col2, col3 = st.columns(3)
@@ -221,14 +220,6 @@ with col3:
 # Display data table
 st.subheader("Data")
 
-# Create download button
-csv = filtered_df.to_csv(index=False)
-st.download_button(
-    label="Download data as CSV",
-    data=csv,
-    file_name="earthquakes_data.csv",
-    mime="text/csv",
-)
 
 # Display dataframe with custom index starting from 1
 st.dataframe(
@@ -245,3 +236,17 @@ st.dataframe(
     }),
     height=385  # Set height to 500px
 )
+
+# Create download button
+csv = filtered_df.to_csv(index=False)
+st.download_button(
+    label="Download data as CSV",
+    data=csv,
+    file_name="earthquakes_data.csv",
+    mime="text/csv",
+)
+
+
+st.markdown("")
+url = 'http://www.geophysics.geol.uoa.gr/stations/maps/recent_gr.html'
+st.markdown("Data source: [National and Kapodistrian University of Athens Seismology Laboratory](%s)" % url )

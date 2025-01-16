@@ -209,7 +209,7 @@ m = folium.Map(location=[38.2, 23.7], zoom_start=7, tiles='CartoDB positron')
 for idx, row in filtered_df.iterrows():
     # Calculate color based on recency (more recent = darker)
     # days_old = (max_date - row['Datetime'].date()).days
-    color = get_color(row['Datetime'], min_date, max_date)
+    color = get_color(row['Datetime'], filtered_df['Datetime'].min(), filtered_df['Datetime'].max())
 
     # Calculate radius based on magnitude
     radius = row['Mag']*2.8+1.4

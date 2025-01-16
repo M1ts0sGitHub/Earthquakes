@@ -23,8 +23,8 @@ def load_earthquake_data():
     
     # Assign the data and column_names to our dataframe
     df = pd.DataFrame(df_list[1:], columns=df_list[0])
-    # Keep the last n earthquakes
-    df = df.iloc[:850]
+    # Remove last (unvalid) row
+    df = df.iloc[:-1]
     
     # Convert Lat & Long from text to float
     df['Lat'] = df['Lat'].str.replace(',', '.').astype(float)

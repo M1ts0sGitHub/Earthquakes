@@ -265,16 +265,6 @@ st.dataframe(
     height=385  # Set height to 500px
 )
 
-# Create download button
-csv = filtered_df.to_csv(index=False)
-st.download_button(
-    label="Download data as CSV",
-    data=csv,
-    file_name="earthquakes_data.csv",
-    mime="text/csv",
-)
-
-
 st.markdown("")
 url = 'http://www.geophysics.geol.uoa.gr/stations/maps/recent_gr.html'
 st.markdown(

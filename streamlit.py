@@ -133,9 +133,6 @@ df = load_earthquake_data()
 # Title and description
 st.title("🌍 Earthquakes in Greece")
 
-# Sidebar filters
-st.sidebar.header("Filters")
-
 st.sidebar.markdown("---")
 
 # Date range filter

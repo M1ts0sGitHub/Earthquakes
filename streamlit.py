@@ -131,7 +131,7 @@ st.markdown(
 df = load_earthquake_data()
 
 # Title and description
-st.title("🌍 Recent Earthquakes in Greece")
+st.title("🌍 Earthquakes in Greece")
 
 # Sidebar filters
 st.sidebar.header("Filters")
@@ -212,7 +212,7 @@ for idx, row in filtered_df.iterrows():
     color = get_color(row['Datetime'], min_date, max_date)
 
     # Calculate radius based on magnitude
-    radius = row['Mag']*2.8+1
+    radius = row['Mag']*2.8+1.4
     
     # Create popup content
     popup_content = f"""

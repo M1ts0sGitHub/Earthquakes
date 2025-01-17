@@ -96,7 +96,7 @@ def create_color_scale(min_date, max_date):
     ax.set_yticks([])
     
     # Add title
-    ax.set_title('Earthquake Timeline', pad=10)
+    ax.set_title('Earthquake Timeline', pad=4)
     
     # Adjust layout
     plt.tight_layout()
@@ -210,7 +210,7 @@ with col3:
 
 
 # Create the map
-m = folium.Map(location=[38.2, 23.7], zoom_start=7, tiles='CartoDB positron')
+m = folium.Map(location=[38.3, 25], zoom_start=6, tiles='CartoDB positron')
 
 # Add all earthquake points except the most recent one
 for idx, row in filtered_df.iterrows():
@@ -260,13 +260,19 @@ folium.CircleMarker(
 ).add_to(m)
 
 # Display the map
-st_folium(m, width=800, height=900)
+st_folium(m, width=800, height=450)
 
 # Create and display color scale
 if not filtered_df.empty:
     color_scale_fig = create_color_scale(filtered_df['Datetime'].min(), 
-                                       filtered_df['Datetime'].max())
+                                         filtered_df['Datetime'].max())
     color_scale_fig.patch.set_facecolor('#d7edeb')  # Set background color to light grey
+    
+    # Adjust font size
+    ax = color_scale_fig.gca()  # Get current axes
+    ax.tick_params(axis='both', which='major', labelsize=8)  # Set font size to 8 for tick labels
+    ax.set_title('Earthquake Timeline', fontsize=8, pad=10)  # Set font size to 8 for the title
+    
     st.pyplot(color_scale_fig)
 
 # Add a space

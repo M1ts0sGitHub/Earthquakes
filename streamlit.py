@@ -7,7 +7,6 @@ from streamlit_folium import st_folium
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
-from streamlit_autorefresh import st_autorefresh
 
 @st.cache_data(ttl=300)  # Cache the data for 5 minutes
 def load_earthquake_data():

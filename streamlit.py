@@ -223,7 +223,7 @@ for idx, row in filtered_df.iterrows():
         color = get_color(row['Datetime'], filtered_df['Datetime'].min(), filtered_df['Datetime'].max())
 
         # Calculate radius based on magnitude
-        radius = row['Mag'] * 2.8 + 1.4
+        radius = row['Mag'] * 1.8 + 0.6
         
         # Create popup content
         popup_content = f"""
@@ -245,7 +245,7 @@ for idx, row in filtered_df.iterrows():
 
 # Add the most recent earthquake marker
 most_recent = filtered_df.loc[filtered_df['Datetime'].idxmax()]
-radius = most_recent['Mag'] * 2.8 + 1.4
+radius = most_recent['Mag'] * 1.8 + 0.6
 popup_content = f"""
 <b>Date:</b> {most_recent['Datetime'].strftime('%Y-%m-%d %H:%M')}<br>
 <b>Magnitude:</b> {most_recent['Mag']:.1f}<br>

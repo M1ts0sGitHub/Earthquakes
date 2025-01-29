@@ -9,9 +9,6 @@ import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
 from streamlit_autorefresh import st_autorefresh
 
-# Set the interval to 60 seconds (60000 milliseconds)
-st_autorefresh(interval=60000, key="datarefresh")
-
 @st.cache_data(ttl=300)  # Cache the data for 5 minutes
 def load_earthquake_data():
     # Getting Data
@@ -117,6 +114,9 @@ st.set_page_config(
     layout="wide"
 )
 
+# Set the interval to 60 seconds (60000 milliseconds)
+st_autorefresh(interval=60000, key="datarefresh")
+
 # Add custom CSS to control max width
 st.markdown(
     """
@@ -130,9 +130,6 @@ st.markdown(
     """,
     unsafe_allow_html=True
 )
-
-# Set the interval to 60 seconds (60000 milliseconds)
-st_autorefresh(interval=60000, key="datarefresh")
 
 # Load the data
 df = load_earthquake_data()

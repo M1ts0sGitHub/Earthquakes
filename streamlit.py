@@ -115,7 +115,7 @@ st.set_page_config(
 )
 
 # Auto-refresh can come after page config
-st_autorefresh(interval=60000, key="datarefresh")
+st_autorefresh(interval=2000, key="datarefresh")
 
 # Add custom CSS to control max width
 st.markdown(
